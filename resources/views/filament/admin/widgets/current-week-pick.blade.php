@@ -24,14 +24,14 @@
                     >
                         <div
                             class="fi-current-week-poster-wrap"
-                            style="flex-shrink: 0; width: 2.5rem; height: 3.5rem; overflow: hidden; border-radius: 0.25rem; background: rgba(0,0,0,0.06);"
+                            style="flex-shrink: 0; overflow: hidden; border-radius: 0.25rem; background: rgba(0,0,0,0.06);"
                         >
                             @if($dayData['movie']?->poster_url)
                                 <img
                                     src="{{ $dayData['movie']->poster_url }}"
                                     alt="{{ $dayData['movie']->title }}"
                                     class="h-full w-full object-cover"
-                                    style="max-height: 3.5rem; max-width: 2.5rem;"
+                                    style="height: 120px"
                                 >
                             @else
                                 <div style="display: flex; height: 100%; width: 100%; align-items: center; justify-content: center;">
@@ -72,12 +72,6 @@
                     </div>
                 @endforeach
             </div>
-
-            @if($pick->week_start_date)
-                <p class="fi-current-week-date mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
-                    {{ __('أسبوع') }} {{ $pick->week_start_date->format('d/m/Y') }}
-                </p>
-            @endif
         @else
             <div class="fi-current-week-empty flex flex-col items-center justify-center py-8 text-center">
                 <svg class="fi-current-week-empty-icon h-12 w-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
