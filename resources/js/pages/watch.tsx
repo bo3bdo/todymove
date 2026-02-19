@@ -161,36 +161,38 @@ export default function Watch({ movie }: Props) {
                 <div className="animate-fade-in opacity-0">
                     <Link
                         href={home().url}
-                        className="group inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        className="group inline-flex items-center gap-2 rounded-sm border border-border bg-card px-3 py-2 text-sm font-medium text-muted-foreground shadow-sm transition-all duration-300 hover:border-primary/40 hover:bg-primary/5 hover:text-foreground"
                     >
-                        <svg
-                            className="size-4 transition-transform duration-300 group-hover:-translate-x-1"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M15 19l-7-7 7-7"
-                            />
-                        </svg>
-                        Back to films
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-border bg-muted transition-transform duration-300 group-hover:-translate-x-0.5">
+                            <svg
+                                className="size-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                        </span>
+                        <span>Back to films</span>
                     </Link>
                 </div>
 
-                <div className="grid gap-8 lg:grid-cols-3">
+                <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
                     {/* Video Player */}
                     <div
                         className="animate-fade-in-up opacity-0 lg:col-span-2"
                         style={{ animationDelay: '100ms' }}
                     >
-                        <div className="cinematic-glow overflow-hidden rounded-sm border border-border/50 bg-black shadow-2xl">
+                        <div className="cinematic-glow overflow-hidden rounded-sm border border-border/50 bg-black shadow-xl lg:shadow-2xl">
                             {sources.length === 0 ? (
-                                <div className="flex aspect-video flex-col items-center justify-center gap-3 bg-card">
+                                <div className="flex aspect-video flex-col items-center justify-center gap-3 bg-card px-4">
                                     <svg
-                                        className="size-12 text-muted-foreground/50"
+                                        className="size-10 text-muted-foreground/50 lg:size-12"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -202,7 +204,7 @@ export default function Watch({ movie }: Props) {
                                             d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                                         />
                                     </svg>
-                                    <p className="text-muted-foreground">
+                                    <p className="text-center text-sm text-muted-foreground lg:text-base">
                                         No video source available for this
                                         movie.
                                     </p>
@@ -214,6 +216,7 @@ export default function Watch({ movie }: Props) {
                                         key={currentSource?.id}
                                         className="aspect-video w-full bg-black"
                                         controls
+                                        playsInline
                                         poster={movie.poster_url ?? undefined}
                                         onError={tryNextSource}
                                         src={currentSource?.url}
@@ -251,12 +254,12 @@ export default function Watch({ movie }: Props) {
                         </div>
 
                         {sources.length > 1 && (
-                            <div className="mt-4">
-                                <label className="mb-2 block text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                            <div className="mt-3 lg:mt-4">
+                                <label className="mb-1.5 block text-xs font-medium tracking-wider text-muted-foreground uppercase lg:mb-2">
                                     Video Source
                                 </label>
                                 <select
-                                    className="w-full rounded-sm border border-border bg-card px-4 py-3 text-sm text-foreground transition-all duration-300 focus:border-primary/50 focus:ring-1 focus:ring-primary/30 focus:outline-none"
+                                    className="w-full rounded-sm border border-border bg-card px-3 py-2.5 text-sm text-foreground transition-all duration-300 focus:border-primary/50 focus:ring-1 focus:ring-primary/30 focus:outline-none lg:px-4 lg:py-3"
                                     value={currentSourceIndex}
                                     onChange={(e) => {
                                         setError(null);
@@ -280,30 +283,30 @@ export default function Watch({ movie }: Props) {
 
                     {/* Movie Info */}
                     <div
-                        className="animate-fade-in-up space-y-6 opacity-0 lg:col-span-1"
+                        className="animate-fade-in-up space-y-4 opacity-0 lg:col-span-1 lg:space-y-6"
                         style={{ animationDelay: '200ms' }}
                     >
                         {movie.poster_url && (
-                            <div className="relative max-w-[180px]">
-                                <div className="absolute -inset-2 rounded-sm bg-primary/10 blur-xl" />
+                            <div className="relative max-w-[140px] sm:max-w-[160px] lg:max-w-[180px]">
+                                <div className="absolute -inset-1 rounded-sm bg-primary/10 blur-xl lg:-inset-2" />
                                 <img
                                     src={movie.poster_url}
                                     alt={movie.title}
-                                    className="relative w-full rounded-sm border border-border/50 object-cover shadow-xl"
+                                    className="relative w-full rounded-sm border border-border/50 object-cover shadow-lg lg:shadow-xl"
                                 />
                             </div>
                         )}
 
                         <div>
-                            <div className="mb-3 h-px w-16 bg-primary/40" />
-                            <h1 className="font-display text-3xl leading-tight font-semibold tracking-wide text-foreground sm:text-4xl">
+                            <div className="mb-2 h-px w-12 bg-primary/40 lg:mb-3 lg:w-16" />
+                            <h1 className="font-display text-2xl leading-tight font-semibold tracking-wide text-foreground lg:text-3xl lg:text-4xl">
                                 {movie.title}
                             </h1>
-                            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground lg:mt-4 lg:gap-4 lg:text-sm">
                                 {movie.release_date && (
-                                    <span className="flex items-center gap-1.5">
+                                    <span className="flex items-center gap-1">
                                         <svg
-                                            className="size-4"
+                                            className="size-3.5 lg:size-4"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -319,9 +322,9 @@ export default function Watch({ movie }: Props) {
                                     </span>
                                 )}
                                 {movie.runtime_minutes != null && (
-                                    <span className="flex items-center gap-1.5">
+                                    <span className="flex items-center gap-1">
                                         <svg
-                                            className="size-4"
+                                            className="size-3.5 lg:size-4"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -337,9 +340,9 @@ export default function Watch({ movie }: Props) {
                                     </span>
                                 )}
                                 {movie.vote_average != null && (
-                                    <span className="flex items-center gap-1.5 font-medium text-amber-400">
+                                    <span className="flex items-center gap-1 font-medium text-amber-400">
                                         <svg
-                                            className="size-4"
+                                            className="size-3.5 lg:size-4"
                                             fill="currentColor"
                                             viewBox="0 0 20 20"
                                         >
@@ -353,10 +356,10 @@ export default function Watch({ movie }: Props) {
 
                         {movie.overview && (
                             <div>
-                                <h3 className="mb-2 font-display text-lg font-medium text-foreground">
+                                <h3 className="mb-1.5 font-display text-base font-medium text-foreground lg:mb-2 lg:text-lg">
                                     Synopsis
                                 </h3>
-                                <p className="text-sm leading-relaxed text-muted-foreground">
+                                <p className="text-xs leading-relaxed text-muted-foreground lg:text-sm">
                                     {movie.overview}
                                 </p>
                             </div>
