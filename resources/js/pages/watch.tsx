@@ -1,7 +1,79 @@
 import { Head, Link } from '@inertiajs/react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { home } from '@/routes';
+import {
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import PublicLayout from '@/layouts/public-layout';
+
+function getYoutubeEmbedUrl(url: string): string | null {
+    try {
+        const u = new URL(url);
+        const id =
+            u.hostname === 'youtu.be'
+                ? u.pathname.slice(1)
+                : u.searchParams.get('v');
+        return id ? `https://www.youtube.com/embed/${id}?autoplay=1` : null;
+    } catch {
+        return null;
+    }
+}
+
+function TrailerModal({
+    trailerUrl,
+    movieTitle,
+}: {
+    trailerUrl: string;
+    movieTitle: string;
+}) {
+    const embedUrl = useMemo(
+        () => getYoutubeEmbedUrl(trailerUrl),
+        [trailerUrl],
+    );
+
+    if (!embedUrl) {
+        return (
+            <a
+                href={trailerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+            >
+                Watch trailer
+            </a>
+        );
+    }
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <button
+                    type="button"
+                    className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
+                >
+                    Watch trailer
+                </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl border-0 bg-black p-0 text-white shadow-2xl [&>button]:text-white [&>button]:hover:text-white">
+                <DialogTitle className="sr-only">
+                    {movieTitle} – Trailer
+                </DialogTitle>
+                <div className="aspect-video w-full">
+                    <iframe
+                        src={embedUrl}
+                        title={`${movieTitle} trailer`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        className="size-full"
+                    />
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
 
 type VideoSource = {
     id: number;
@@ -152,14 +224,10 @@ export default function Watch({ movie }: Props) {
                             </p>
                         )}
                         {movie.trailer_url && (
-                            <a
-                                href={movie.trailer_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
-                            >
-                                Watch trailer
-                            </a>
+                            <TrailerModal
+                                trailerUrl={movie.trailer_url}
+                                movieTitle={movie.title}
+                            />
                         )}
                     </div>
                 </div>

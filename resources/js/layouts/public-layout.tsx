@@ -1,6 +1,5 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import { archive, home } from '@/routes';
 
 function isStandalone(): boolean {
     if (typeof window === 'undefined') return false;
@@ -21,7 +20,7 @@ export default function PublicLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { auth } = usePage().props as { auth: { user: unknown } };
+    usePage().props;
     const [installPrompt, setInstallPrompt] = useState<{
         prompt: () => Promise<void>;
     } | null>(null);
@@ -64,48 +63,6 @@ export default function PublicLayout({
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-                    <Link
-                        href={home().url}
-                        className="text-lg font-semibold text-foreground hover:opacity-80"
-                    >
-                        Film Night
-                    </Link>
-                    <div className="flex items-center gap-6">
-                        <Link
-                            href={home().url}
-                            className="text-sm text-muted-foreground hover:text-foreground"
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            href={archive().url}
-                            className="text-sm text-muted-foreground hover:text-foreground"
-                        >
-                            Archive
-                        </Link>
-                        {installPrompt && !installDismissed && (
-                            <button
-                                type="button"
-                                onClick={handleInstall}
-                                className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-                            >
-                                Install app
-                            </button>
-                        )}
-                        {auth?.user && (
-                            <a
-                                href="/admin"
-                                className="text-sm text-muted-foreground hover:text-foreground"
-                            >
-                                Admin
-                            </a>
-                        )}
-                    </div>
-                </nav>
-            </header>
-
             {showIosHint && (
                 <div className="border-b border-border bg-muted/50 px-4 py-2 text-center text-sm text-muted-foreground">
                     <span>
@@ -127,7 +84,7 @@ export default function PublicLayout({
                 </div>
             )}
 
-            <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+            <main className="min-h-screen">
                 {children}
             </main>
         </div>
