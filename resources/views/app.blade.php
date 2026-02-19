@@ -34,7 +34,10 @@
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="apple-touch-icon" href="/ios/180.png" sizes="180x180">
+        <link rel="apple-touch-icon" href="/ios/167.png" sizes="167x167">
+        <link rel="apple-touch-icon" href="/ios/152.png" sizes="152x152">
+        <link rel="apple-touch-icon" href="/ios/120.png" sizes="120x120">
         <link rel="manifest" href="{{ asset('build/manifest.webmanifest') }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
