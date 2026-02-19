@@ -156,7 +156,7 @@ export default function Watch({ movie }: Props) {
     return (
         <PublicLayout>
             <Head title={`${movie.title} – Film Night`} />
-            <div className="space-y-8">
+            <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
                 {/* Breadcrumb */}
                 <div className="animate-fade-in opacity-0">
                     <Link
@@ -286,71 +286,74 @@ export default function Watch({ movie }: Props) {
                         className="animate-fade-in-up space-y-4 opacity-0 lg:col-span-1 lg:space-y-6"
                         style={{ animationDelay: '200ms' }}
                     >
-                        {movie.poster_url && (
-                            <div className="relative max-w-[140px] sm:max-w-[160px] lg:max-w-[180px]">
-                                <div className="absolute -inset-1 rounded-sm bg-primary/10 blur-xl lg:-inset-2" />
-                                <img
-                                    src={movie.poster_url}
-                                    alt={movie.title}
-                                    className="relative w-full rounded-sm border border-border/50 object-cover shadow-lg lg:shadow-xl"
-                                />
-                            </div>
-                        )}
+                        {/* Poster + title/meta: side-by-side on mobile, stacked on desktop */}
+                        <div className="flex items-start gap-4 lg:flex-col lg:gap-0 lg:space-y-4">
+                            {movie.poster_url && (
+                                <div className="relative w-[110px] shrink-0 sm:w-[140px] lg:w-[180px]">
+                                    <div className="absolute -inset-1 rounded-sm bg-primary/10 blur-xl lg:-inset-2" />
+                                    <img
+                                        src={movie.poster_url}
+                                        alt={movie.title}
+                                        className="relative w-full rounded-sm border border-border/50 object-cover shadow-lg lg:shadow-xl"
+                                    />
+                                </div>
+                            )}
 
-                        <div>
-                            <div className="mb-2 h-px w-12 bg-primary/40 lg:mb-3 lg:w-16" />
-                            <h1 className="font-display text-2xl leading-tight font-semibold tracking-wide text-foreground lg:text-3xl lg:text-4xl">
-                                {movie.title}
-                            </h1>
-                            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground lg:mt-4 lg:gap-4 lg:text-sm">
-                                {movie.release_date && (
-                                    <span className="flex items-center gap-1">
-                                        <svg
-                                            className="size-3.5 lg:size-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={1.5}
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                        {movie.release_date}
-                                    </span>
-                                )}
-                                {movie.runtime_minutes != null && (
-                                    <span className="flex items-center gap-1">
-                                        <svg
-                                            className="size-3.5 lg:size-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={1.5}
-                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                            />
-                                        </svg>
-                                        {movie.runtime_minutes} min
-                                    </span>
-                                )}
-                                {movie.vote_average != null && (
-                                    <span className="flex items-center gap-1 font-medium text-amber-400">
-                                        <svg
-                                            className="size-3.5 lg:size-4"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        {Number(movie.vote_average).toFixed(1)}
-                                    </span>
-                                )}
+                            <div className="min-w-0 flex-1">
+                                <div className="mb-2 h-px w-12 bg-primary/40 lg:mb-3 lg:w-16" />
+                                <h1 className="font-display text-xl leading-tight font-semibold tracking-wide text-foreground sm:text-2xl lg:text-4xl">
+                                    {movie.title}
+                                </h1>
+                                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground lg:mt-4 lg:gap-4 lg:text-sm">
+                                    {movie.release_date && (
+                                        <span className="flex items-center gap-1">
+                                            <svg
+                                                className="size-3.5 lg:size-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={1.5}
+                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                />
+                                            </svg>
+                                            {movie.release_date}
+                                        </span>
+                                    )}
+                                    {movie.runtime_minutes != null && (
+                                        <span className="flex items-center gap-1">
+                                            <svg
+                                                className="size-3.5 lg:size-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={1.5}
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                            </svg>
+                                            {movie.runtime_minutes} min
+                                        </span>
+                                    )}
+                                    {movie.vote_average != null && (
+                                        <span className="flex items-center gap-1 font-medium text-amber-400">
+                                            <svg
+                                                className="size-3.5 lg:size-4"
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                            >
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                            </svg>
+                                            {Number(movie.vote_average).toFixed(1)}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
