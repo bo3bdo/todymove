@@ -5,8 +5,7 @@ function isStandalone(): boolean {
     if (typeof window === 'undefined') return false;
     return (
         (window.navigator as unknown as { standalone?: boolean }).standalone ===
-            true ||
-        window.matchMedia('(display-mode: standalone)').matches
+            true || window.matchMedia('(display-mode: standalone)').matches
     );
 }
 
@@ -62,21 +61,32 @@ export default function PublicLayout({
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="relative min-h-screen bg-background text-foreground">
+            {/* Film grain texture overlay */}
+            <div
+                className="pointer-events-none fixed inset-0 z-[9998] opacity-[0.035] mix-blend-overlay"
+                style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+                }}
+            />
+
+            {/* Vignette effect */}
+            <div className="vignette pointer-events-none fixed inset-0 z-[9997]" />
+
+            {/* iOS Install Hint */}
             {showIosHint && (
-                <div className="border-b border-border bg-muted/50 px-4 py-2 text-center text-sm text-muted-foreground">
-                    <span>
-                        Add Film Night to your Home Screen: tap the share
-                        button
-                        <span className="mx-1 inline-block align-middle font-bold">
+                <div className="relative z-50 border-b border-border/50 bg-card/80 px-4 py-3 text-center text-sm text-muted-foreground backdrop-blur-sm">
+                    <span className="flex items-center justify-center gap-2">
+                        Add Film Night to your Home Screen: tap the share button
+                        <span className="inline-block align-middle font-bold text-primary">
                             ⎋
                         </span>
-                        then &quot;Add to Home Screen&quot;.
+                        then "Add to Home Screen".
                     </span>
                     <button
                         type="button"
                         onClick={dismissIosHint}
-                        className="ml-2 font-medium text-foreground hover:underline"
+                        className="ml-3 font-medium text-foreground transition-colors hover:text-primary"
                         aria-label="Dismiss"
                     >
                         Dismiss
@@ -84,9 +94,7 @@ export default function PublicLayout({
                 </div>
             )}
 
-            <main className="min-h-screen">
-                {children}
-            </main>
+            <main className="relative min-h-screen">{children}</main>
         </div>
     );
 }
