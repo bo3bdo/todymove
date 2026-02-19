@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { home } from '@/routes';
 import {
     Dialog,
@@ -113,13 +113,10 @@ function TrailerModal({
     );
 }
 
-type VideoSource = {
+type WatchLink = {
     id: number;
     label: string;
     url: string;
-    type: string;
-    quality: string | null;
-    priority: number;
 };
 
 type Props = {
@@ -132,26 +129,12 @@ type Props = {
         release_date: string | null;
         runtime_minutes: number | null;
         vote_average: string | number | null;
-        video_sources: VideoSource[];
+        watch_links: WatchLink[];
     };
 };
 
 export default function Watch({ movie }: Props) {
-    const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
-    const [error, setError] = useState<string | null>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
-
-    const sources = movie.video_sources;
-    const currentSource = sources[currentSourceIndex] ?? null;
-
-    const tryNextSource = useCallback(() => {
-        setError(null);
-        if (currentSourceIndex < sources.length - 1) {
-            setCurrentSourceIndex((i) => i + 1);
-        } else {
-            setError('This video could not be loaded.');
-        }
-    }, [currentSourceIndex, sources.length]);
+    const watchLinks = movie.watch_links ?? [];
 
     return (
         <PublicLayout>
@@ -183,102 +166,48 @@ export default function Watch({ movie }: Props) {
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
-                    {/* Video Player */}
+                    {/* Watch links */}
                     <div
                         className="animate-fade-in-up opacity-0 lg:col-span-2"
                         style={{ animationDelay: '100ms' }}
                     >
-                        <div className="cinematic-glow overflow-hidden rounded-sm border border-border/50 bg-black shadow-xl lg:shadow-2xl">
-                            {sources.length === 0 ? (
-                                <div className="flex aspect-video flex-col items-center justify-center gap-3 bg-card px-4">
-                                    <svg
-                                        className="size-10 text-muted-foreground/50 lg:size-12"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={1}
-                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                                        />
-                                    </svg>
-                                    <p className="text-center text-sm text-muted-foreground lg:text-base">
-                                        No video source available for this
-                                        movie.
-                                    </p>
-                                </div>
+                        <div>
+                            <h2 className="mb-3 font-display text-sm font-medium tracking-wide text-foreground lg:text-base">
+                                أين تشاهد الفيلم
+                            </h2>
+                            {watchLinks.length === 0 ? (
+                                <p className="rounded-sm border border-border/50 bg-card px-4 py-6 text-center text-sm text-muted-foreground">
+                                    لا يوجد روابط مشاهدة لهذا الفيلم.
+                                </p>
                             ) : (
-                                <>
-                                    <video
-                                        ref={videoRef}
-                                        key={currentSource?.id}
-                                        className="aspect-video w-full bg-black"
-                                        controls
-                                        playsInline
-                                        poster={movie.poster_url ?? undefined}
-                                        onError={tryNextSource}
-                                        src={currentSource?.url}
-                                    >
-                                        <source
-                                            src={currentSource?.url}
-                                            type={
-                                                currentSource?.type ||
-                                                'video/mp4'
-                                            }
-                                        />
-                                        Your browser does not support the video
-                                        tag.
-                                    </video>
-                                    {error && (
-                                        <div className="border-t border-destructive/30 bg-destructive/20 px-4 py-3 text-destructive">
-                                            <span className="flex items-center gap-2">
-                                                <svg
-                                                    className="size-4"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 20 20"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                                {error}
-                                            </span>
-                                        </div>
-                                    )}
-                                </>
+                                <div className="flex flex-wrap gap-2">
+                                    {watchLinks.map((link) => (
+                                        <a
+                                            key={link.id}
+                                            href={link.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 rounded-sm border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-all duration-300 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+                                        >
+                                            <svg
+                                                className="size-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={1.5}
+                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                                />
+                                            </svg>
+                                            {link.label}
+                                        </a>
+                                    ))}
+                                </div>
                             )}
                         </div>
-
-                        {sources.length > 1 && (
-                            <div className="mt-3 lg:mt-4">
-                                <label className="mb-1.5 block text-xs font-medium tracking-wider text-muted-foreground uppercase lg:mb-2">
-                                    Video Source
-                                </label>
-                                <select
-                                    className="w-full rounded-sm border border-border bg-card px-3 py-2.5 text-sm text-foreground transition-all duration-300 focus:border-primary/50 focus:ring-1 focus:ring-primary/30 focus:outline-none lg:px-4 lg:py-3"
-                                    value={currentSourceIndex}
-                                    onChange={(e) => {
-                                        setError(null);
-                                        setCurrentSourceIndex(
-                                            Number(e.target.value),
-                                        );
-                                    }}
-                                >
-                                    {sources.map((src, i) => (
-                                        <option key={src.id} value={i}>
-                                            {src.label}
-                                            {src.quality
-                                                ? ` (${src.quality})`
-                                                : ''}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        )}
                     </div>
 
                     {/* Movie Info */}

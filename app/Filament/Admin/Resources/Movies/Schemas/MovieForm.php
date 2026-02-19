@@ -5,7 +5,6 @@ namespace App\Filament\Admin\Resources\Movies\Schemas;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -31,32 +30,33 @@ class MovieForm
                             ->relationship()
                             ->schema([
                                 TextInput::make('label')
+                                    ->label('الاسم')
                                     ->required()
                                     ->maxLength(255)
-                                    ->placeholder('e.g. Server 1 - 1080p'),
+                                    ->placeholder('مثل: Netflix، Shahid، Weyyak'),
                                 TextInput::make('url')
+                                    ->label('رابط المشاهدة')
                                     ->url()
                                     ->required()
-                                    ->maxLength(2048),
-                                Select::make('type')
-                                    ->options([
-                                        'mp4' => 'MP4',
-                                        'hls' => 'HLS',
-                                    ])
-                                    ->placeholder('Optional'),
-                                TextInput::make('quality')
-                                    ->maxLength(50)
-                                    ->placeholder('e.g. 720p, 1080p'),
+                                    ->maxLength(2048)
+                                    ->placeholder('https://...')
+                                    ->helperText('رابط صفحة الفيلم على الموقع (يفتح في تاب جديد)'),
+                                TextInput::make('type')
+                                    ->default('external')
+                                    ->dehydrated()
+                                    ->hidden(),
                                 TextInput::make('priority')
-                                    ->numeric()
                                     ->default(1)
-                                    ->minValue(1),
+                                    ->dehydrated()
+                                    ->hidden(),
                                 Toggle::make('is_active')
-                                    ->default(true),
+                                    ->default(true)
+                                    ->hidden()
+                                    ->dehydrated(),
                             ])
                             ->columns(2)
                             ->defaultItems(0)
-                            ->addActionLabel('Add video source'),
+                            ->addActionLabel('إضافة رابط مشاهدة'),
                     ]),
                 Section::make('TMDB data')
                     ->description('Fetched automatically via "Fetch from TMDB" action.')

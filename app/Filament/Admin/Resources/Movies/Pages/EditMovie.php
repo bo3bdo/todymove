@@ -174,7 +174,7 @@ class EditMovie extends EditRecord
 
         if (count($sources) < 1) {
             throw ValidationException::withMessages([
-                'videoSources' => ['Add at least one active video source before saving.'],
+                'videoSources' => ['أضف رابط مشاهدة واحد على الأقل.'],
             ]);
         }
 

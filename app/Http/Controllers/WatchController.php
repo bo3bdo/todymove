@@ -14,13 +14,10 @@ class WatchController extends Controller
     {
         $movie->load(['videoSources' => fn ($q) => $q->where('is_active', true)]);
 
-        $sources = $movie->videoSources->map(fn (MovieVideoSource $s) => [
+        $watch_links = $movie->videoSources->map(fn (MovieVideoSource $s) => [
             'id' => $s->id,
             'label' => $s->label,
             'url' => $s->url,
-            'type' => $s->type,
-            'quality' => $s->quality,
-            'priority' => $s->priority,
         ])->values()->all();
 
         return Inertia::render('watch', [
@@ -33,7 +30,7 @@ class WatchController extends Controller
                 'release_date' => $movie->release_date?->format('Y'),
                 'runtime_minutes' => $movie->runtime_minutes,
                 'vote_average' => $movie->vote_average,
-                'video_sources' => $sources,
+                'watch_links' => $watch_links,
             ],
         ]);
     }

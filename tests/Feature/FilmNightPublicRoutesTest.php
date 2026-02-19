@@ -41,5 +41,5 @@ test('watch page renders when movie exists', function () {
         ->component('watch')
         ->has('movie')
         ->has('movie.title')
-        ->has('movie.video_sources'));
+        ->has('movie.watch_links'));
 });
