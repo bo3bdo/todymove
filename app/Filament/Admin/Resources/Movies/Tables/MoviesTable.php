@@ -6,6 +6,7 @@ use App\Models\FilmOfWeekHistory;
 use App\Models\Movie;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
@@ -41,18 +42,6 @@ class MoviesTable
                     ->date()
                     ->sortable()
                     ->formatStateUsing(fn ($state) => $state?->format('Y')),
-                TextColumn::make('vote_average')
-                    ->numeric(decimalPlaces: 1)
-                    ->sortable(),
-                TextColumn::make('genres')
-                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : ($state ?? '')),
-                TextColumn::make('video_sources_count')
-                    ->label('Sources')
-                    ->counts('videoSources'),
-                TextColumn::make('fetched_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->placeholder('Not fetched'),
             ])
             ->filters([
                 //
@@ -61,6 +50,7 @@ class MoviesTable
                 Action::make('addToFilmOfWeek')
                     ->label('Add to film of week')
                     ->icon('heroicon-o-star')
+                    ->iconButton()
                     ->visible(fn (Movie $record): bool => ! $record->is_film_of_week && Movie::filmOfWeek()->count() < 4)
                     ->action(function (Movie $record): void {
                         $usedOrders = Movie::filmOfWeek()->pluck('film_of_week_order')->all();
@@ -82,6 +72,7 @@ class MoviesTable
                 Action::make('removeFromFilmOfWeek')
                     ->label('Remove from film of week')
                     ->icon('heroicon-o-minus-circle')
+                    ->iconButton()
                     ->color('gray')
                     ->visible(fn (Movie $record): bool => (bool) $record->is_film_of_week)
                     ->action(function (Movie $record): void {
@@ -99,7 +90,10 @@ class MoviesTable
                             ->success()
                             ->send();
                     }),
-                EditAction::make(),
+                EditAction::make()
+                    ->iconButton(),
+                DeleteAction::make()
+                    ->iconButton(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

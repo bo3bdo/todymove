@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Admin\Widgets\CurrentWeekPick;
 use App\Filament\Admin\Widgets\LatestMovies;
 use App\Filament\Admin\Widgets\StatsOverview;
 use Filament\Http\Middleware\Authenticate;
@@ -38,10 +37,8 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
                 StatsOverview::class,
-                CurrentWeekPick::class,
                 LatestMovies::class,
             ])
             ->middleware([
