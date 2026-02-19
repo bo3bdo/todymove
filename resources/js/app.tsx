@@ -6,9 +6,9 @@ import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-    import('virtual:pwa-register').then(({ registerSW }) => {
-        registerSW({ immediate: true });
-    });
+    navigator.serviceWorker
+        .register('/sw.js', { scope: '/' })
+        .catch(console.error);
 }
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';

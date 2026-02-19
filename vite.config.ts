@@ -13,6 +13,7 @@ function pwaPlugin() {
         return VitePWA({
             registerType: 'autoUpdate',
             injectRegister: null,
+            outDir: 'public',
             manifest: {
                 name: 'Film Night',
                 short_name: 'Film Night',
@@ -20,24 +21,60 @@ function pwaPlugin() {
                 theme_color: '#0a0a0a',
                 background_color: '#0a0a0a',
                 display: 'standalone',
+                scope: '/',
                 start_url: '/',
                 icons: [
+                    {
+                        src: '/android/android-launchericon-48-48.png',
+                        sizes: '48x48',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/android/android-launchericon-72-72.png',
+                        sizes: '72x72',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/android/android-launchericon-96-96.png',
+                        sizes: '96x96',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/android/android-launchericon-144-144.png',
+                        sizes: '144x144',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/android/android-launchericon-192-192.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                        purpose: 'any',
+                    },
+                    {
+                        src: '/android/android-launchericon-512-512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'maskable',
+                    },
                     {
                         src: '/favicon.svg',
                         sizes: 'any',
                         type: 'image/svg+xml',
                         purpose: 'any',
                     },
-                    {
-                        src: '/apple-touch-icon.png',
-                        sizes: '180x180',
-                        type: 'image/png',
-                        purpose: 'any maskable',
-                    },
                 ],
             },
             workbox: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+                globDirectory: 'public',
+                globPatterns: [
+                    'build/**/*.{js,css,ico,png,svg,woff2}',
+                    'android/*.png',
+                    'ios/*.png',
+                    'favicon.ico',
+                    'favicon.svg',
+                    'apple-touch-icon.png',
+                ],
+                navigateFallback: null,
             },
         });
     } catch {
