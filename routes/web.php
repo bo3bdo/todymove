@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\StoreMovieCommentController;
+use App\Http\Controllers\StoreMovieRatingController;
 use App\Http\Controllers\WatchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,6 +23,8 @@ Route::get('/sw.js', function () {
 })->name('sw');
 
 Route::get('/watch/{movie}', WatchController::class)->name('watch')->where('movie', '[0-9]+');
+Route::post('/watch/{movie}/comments', StoreMovieCommentController::class)->name('watch.comments.store')->where('movie', '[0-9]+');
+Route::post('/watch/{movie}/ratings', StoreMovieRatingController::class)->name('watch.ratings.store')->where('movie', '[0-9]+');
 
 Route::get('/archive', ArchiveController::class)->name('archive');
 

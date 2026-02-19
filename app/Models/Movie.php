@@ -63,6 +63,28 @@ class Movie extends Model
         return $this->hasMany(MovieVideoSource::class)->orderBy('priority');
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(MovieComment::class)->latest();
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(MovieRating::class);
+    }
+
+    public function getVisitorRatingAverageAttribute(): ?float
+    {
+        $avg = $this->ratings()->avg('rating');
+
+        return $avg !== null ? (float) round($avg, 1) : null;
+    }
+
+    public function getVisitorRatingCountAttribute(): int
+    {
+        return $this->ratings()->count();
+    }
+
     public function getPosterUrlAttribute(): ?string
     {
         if (! $this->poster_path) {
