@@ -12,6 +12,7 @@ type MovieSummary = {
 };
 
 type Props = {
+    hasAnimeOfWeek?: boolean;
     filmOfWeek?: MovieSummary[];
     archivePreview?: { id: number; title: string; poster_url: string | null }[];
 };
@@ -137,11 +138,57 @@ function filmOfWeekGridClass(count: number): string {
     return 'grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 justify-items-center';
 }
 
-export default function Home({ filmOfWeek = [], archivePreview = [] }: Props) {
+export default function Home({
+    hasAnimeOfWeek = false,
+    filmOfWeek = [],
+    archivePreview = [],
+}: Props) {
     return (
         <PublicLayout>
             <Head title="Film Night" />
             <div className="min-h-screen">
+                {/* Anime of the Week banner */}
+                {hasAnimeOfWeek && (
+                    <section className="animate-fade-in-up border-b border-border/50 bg-gradient-to-r from-violet-500/5 via-violet-500/10 to-violet-500/5 opacity-0">
+                        <div className="relative px-4 py-3 sm:px-6">
+                            <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 sm:flex-row">
+                                <div className="flex items-center gap-3">
+                                    <span className="flex size-10 items-center justify-center rounded-lg bg-violet-500/20 text-xl">
+                                        📺
+                                    </span>
+                                    <div>
+                                        <p className="font-display text-sm font-medium text-foreground">
+                                            أنمي الأسبوع
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                            لدينا اختيار أنمي هذا الأسبوع
+                                        </p>
+                                    </div>
+                                </div>
+                                <Link
+                                    href="/anime"
+                                    className="inline-flex items-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-400 transition-all duration-300 hover:border-violet-500/50 hover:bg-violet-500/20"
+                                >
+                                    <span>عرض الأنمي</span>
+                                    <svg
+                                        className="size-4 rtl:rotate-180"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={1.5}
+                                            d="M9 5l7 7-7 7"
+                                        />
+                                    </svg>
+                                </Link>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 {/* Hero Section */}
                 <section className="relative overflow-hidden">
                     {/* Ambient background effect */}

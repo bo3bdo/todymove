@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anime;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -21,7 +22,12 @@ class HomeController extends Controller
             ->limit(4)
             ->get();
 
+        $hasAnimeOfWeek = Anime::query()
+            ->where('is_anime_of_week', true)
+            ->exists();
+
         return Inertia::render('home', [
+            'hasAnimeOfWeek' => $hasAnimeOfWeek,
             'filmOfWeek' => $filmOfWeek->map(fn (Movie $m) => [
                 'id' => $m->id,
                 'title' => $m->title,
