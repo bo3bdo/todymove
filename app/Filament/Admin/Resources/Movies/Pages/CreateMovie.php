@@ -47,26 +47,42 @@ class CreateMovie extends CreateRecord
         if (blank($input)) {
             Notification::make()
                 ->danger()
-                ->title('Paste a TMDB movie URL or enter a title')
+                ->title('Paste a TMDB movie or TV series URL or enter a title')
                 ->send();
 
             return;
         }
 
-        $tmdbId = $this->extractTmdbIdFromInput($input);
-        if ($tmdbId !== null) {
-            $details = app(TmdbService::class)->details($tmdbId);
-            if ($details) {
-                $this->fillFromTmdb($tmdbId);
-                Notification::make()
-                    ->success()
-                    ->title('Fetched from TMDB')
-                    ->send();
+        $extracted = $this->extractTmdbIdFromInput($input);
+        if ($extracted !== null) {
+            if ($extracted['type'] === 'tv') {
+                $details = app(TmdbService::class)->tvDetails($extracted['id']);
+                if ($details) {
+                    $this->fillFromTmdbTv($extracted['id']);
+                    Notification::make()
+                        ->success()
+                        ->title('Fetched from TMDB (TV series)')
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->danger()
+                        ->title('TV series not found for this link or ID')
+                        ->send();
+                }
             } else {
-                Notification::make()
-                    ->danger()
-                    ->title('Movie not found for this link or ID')
-                    ->send();
+                $details = app(TmdbService::class)->details($extracted['id']);
+                if ($details) {
+                    $this->fillFromTmdb($extracted['id']);
+                    Notification::make()
+                        ->success()
+                        ->title('Fetched from TMDB')
+                        ->send();
+                } else {
+                    Notification::make()
+                        ->danger()
+                        ->title('Movie not found for this link or ID')
+                        ->send();
+                }
             }
 
             return;
@@ -98,16 +114,21 @@ class CreateMovie extends CreateRecord
     }
 
     /**
-     * Extract TMDB movie ID from a full URL (e.g. themoviedb.org/movie/1236153-mercy) or plain digits.
+     * Extract TMDB ID and type from URL (movie or TV) or plain digits. Plain digits default to movie.
+     *
+     * @return array{type: 'movie'|'tv', id: int}|null
      */
-    protected function extractTmdbIdFromInput(string $input): ?int
+    protected function extractTmdbIdFromInput(string $input): ?array
     {
         $input = trim($input);
+        if (preg_match('#themoviedb\.org/tv/(\d+)#i', $input, $m)) {
+            return ['type' => 'tv', 'id' => (int) $m[1]];
+        }
         if (preg_match('#themoviedb\.org/movie/(\d+)#i', $input, $m)) {
-            return (int) $m[1];
+            return ['type' => 'movie', 'id' => (int) $m[1]];
         }
         if (is_numeric($input)) {
-            return (int) $input;
+            return ['type' => 'movie', 'id' => (int) $input];
         }
 
         return null;
@@ -157,6 +178,49 @@ class CreateMovie extends CreateRecord
             'overview' => $details['overview'] ?? null,
             'release_date' => $releaseDate,
             'runtime_minutes' => $details['runtime'] ?? null,
+            'genres' => $genres,
+            'vote_average' => $details['vote_average'] ?? null,
+            'vote_count' => $details['vote_count'] ?? null,
+            'trailer_youtube_key' => $trailerKey,
+            'fetched_at' => now()->toDateTimeString(),
+        ]);
+    }
+
+    protected function fillFromTmdbTv(int $tmdbId): void
+    {
+        $tmdb = app(TmdbService::class);
+        $details = $tmdb->tvDetails($tmdbId);
+        $videos = $tmdb->tvVideos($tmdbId);
+
+        if (! $details) {
+            Notification::make()
+                ->danger()
+                ->title('Failed to fetch TV series details')
+                ->send();
+
+            return;
+        }
+
+        $trailerKey = $tmdb->findBestTrailer($videos);
+        $genres = $tmdb->genreNamesFromDetails($details);
+        $firstAirDate = isset($details['first_air_date']) && $details['first_air_date']
+            ? Carbon::parse($details['first_air_date'])->format('Y-m-d')
+            : null;
+        $episodeRunTime = $details['episode_run_time'][0] ?? null;
+
+        $currentTitle = (string) ($this->form->getState()['title'] ?? '');
+        $trimmed = trim($currentTitle);
+        $isLinkOrId = is_numeric($trimmed) || str_contains(strtolower($currentTitle), 'themoviedb.org');
+        $titleToUse = $isLinkOrId ? ($details['name'] ?? $currentTitle) : $currentTitle;
+
+        $this->form->fill([
+            'title' => $titleToUse,
+            'tmdb_id' => $tmdbId,
+            'poster_path' => $details['poster_path'] ?? null,
+            'backdrop_path' => $details['backdrop_path'] ?? null,
+            'overview' => $details['overview'] ?? null,
+            'release_date' => $firstAirDate,
+            'runtime_minutes' => $episodeRunTime,
             'genres' => $genres,
             'vote_average' => $details['vote_average'] ?? null,
             'vote_count' => $details['vote_count'] ?? null,

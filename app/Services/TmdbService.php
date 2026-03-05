@@ -116,6 +116,54 @@ class TmdbService
     }
 
     /**
+     * Get TV series details by TMDB id.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function tvDetails(int $tmdbId): ?array
+    {
+        $cacheKey = "tmdb_tv_details_{$tmdbId}";
+
+        return Cache::remember($cacheKey, self::CACHE_TTL_SECONDS, function () use ($tmdbId) {
+            $response = Http::withToken($this->accessToken)
+                ->get(self::BASE_URL."/tv/{$tmdbId}", [
+                    'language' => $this->language,
+                ]);
+
+            if (! $response->successful()) {
+                return null;
+            }
+
+            return $response->json();
+        });
+    }
+
+    /**
+     * Get TV series videos (trailers, teasers) by TMDB id.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function tvVideos(int $tmdbId): array
+    {
+        $cacheKey = "tmdb_tv_videos_{$tmdbId}";
+
+        return Cache::remember($cacheKey, self::CACHE_TTL_SECONDS, function () use ($tmdbId) {
+            $response = Http::withToken($this->accessToken)
+                ->get(self::BASE_URL."/tv/{$tmdbId}/videos", [
+                    'language' => $this->language,
+                ]);
+
+            if (! $response->successful()) {
+                return [];
+            }
+
+            $data = $response->json();
+
+            return $data['results'] ?? [];
+        });
+    }
+
+    /**
      * Extract genre names from TMDB details response.
      *
      * @param  array<string, mixed>  $details

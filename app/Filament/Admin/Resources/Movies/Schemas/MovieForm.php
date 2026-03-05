@@ -22,8 +22,8 @@ class MovieForm
                     ->schema([
                         TextInput::make('title')
                             ->label('TMDB link or title')
-                            ->placeholder('e.g. https://www.themoviedb.org/movie/1236153-mercy')
-                            ->helperText('Paste the full TMDB movie page URL (e.g. themoviedb.org/movie/1236153-mercy) or enter a title to search.')
+                            ->placeholder('e.g. https://www.themoviedb.org/movie/1236153-mercy or .../tv/255661-young-sherlock-holmes')
+                            ->helperText('Paste a TMDB movie or TV series page URL (themoviedb.org/movie/... or themoviedb.org/tv/...) or enter a movie title to search.')
                             ->required()
                             ->maxLength(500),
                         Repeater::make('videoSources')
