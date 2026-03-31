@@ -182,6 +182,7 @@ type Props = {
     movie: {
         id: number;
         title: string;
+        type?: string | null;
         overview: string | null;
         poster_url: string | null;
         trailer_url: string | null;
@@ -197,6 +198,10 @@ type Props = {
     commentStoreUrl: string;
     ratingStoreUrl: string;
 };
+
+function isSeriesType(type?: string | null): boolean {
+    return ['tv', 'series', 'tv_series'].includes((type ?? '').toLowerCase());
+}
 
 function StarRating({
     value,
@@ -378,6 +383,11 @@ export default function Watch({
                         <div className="flex items-start gap-4 lg:flex-col lg:gap-0 lg:space-y-4">
                             {movie.poster_url && (
                                 <div className="relative w-[110px] shrink-0 sm:w-[140px] lg:w-[180px]">
+                                    {isSeriesType(movie.type) && (
+                                        <span className="absolute top-2 left-2 z-10 rounded-sm bg-violet-600/90 px-2 py-1 text-[10px] font-semibold tracking-wide text-white uppercase">
+                                            Series
+                                        </span>
+                                    )}
                                     <div className="absolute -inset-1 rounded-sm bg-primary/10 blur-xl lg:-inset-2" />
                                     <img
                                         src={movie.poster_url}

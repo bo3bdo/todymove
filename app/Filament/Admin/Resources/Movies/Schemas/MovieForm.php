@@ -26,6 +26,16 @@ class MovieForm
                             ->helperText('Paste a TMDB movie or TV series page URL (themoviedb.org/movie/... or themoviedb.org/tv/...) or enter a movie title to search.')
                             ->required()
                             ->maxLength(500),
+                        TextInput::make('tmdb_id')
+                            ->numeric()
+                            ->dehydrated()
+                            ->dehydratedWhenHidden()
+                            ->hidden(),
+                        TextInput::make('type')
+                            ->default('movie')
+                            ->dehydrated()
+                            ->dehydratedWhenHidden()
+                            ->hidden(),
                         Repeater::make('videoSources')
                             ->relationship()
                             ->schema([

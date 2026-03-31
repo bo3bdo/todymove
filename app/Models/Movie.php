@@ -16,6 +16,7 @@ class Movie extends Model
      */
     protected $fillable = [
         'tmdb_id',
+        'type',
         'title',
         'poster_path',
         'backdrop_path',
@@ -45,6 +46,7 @@ class Movie extends Model
     protected function casts(): array
     {
         return [
+            'type' => 'string',
             'genres' => 'array',
             'release_date' => 'date',
             'vote_average' => 'decimal:1',

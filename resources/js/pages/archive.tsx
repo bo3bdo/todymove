@@ -5,6 +5,7 @@ import PublicLayout from '@/layouts/public-layout';
 type MovieSummary = {
     id: number;
     title: string;
+    type?: string | null;
     poster_url: string | null;
     release_date?: string | null;
     vote_average?: string | number | null;
@@ -23,6 +24,10 @@ type Props = {
     movies: PaginatedData<MovieSummary>;
 };
 
+function isSeriesType(type?: string | null): boolean {
+    return ['tv', 'series', 'tv_series'].includes((type ?? '').toLowerCase());
+}
+
 function MovieCard({ movie }: { movie: MovieSummary }) {
     return (
         <Link
@@ -31,6 +36,11 @@ function MovieCard({ movie }: { movie: MovieSummary }) {
         >
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-40" />
             <div className="aspect-[2/3] overflow-hidden bg-muted">
+                {isSeriesType(movie.type) && (
+                    <span className="absolute top-3 left-3 z-10 rounded-sm bg-violet-600/90 px-2 py-1 text-[10px] font-semibold tracking-wide text-white uppercase">
+                        Series
+                    </span>
+                )}
                 {movie.poster_url ? (
                     <img
                         src={movie.poster_url}

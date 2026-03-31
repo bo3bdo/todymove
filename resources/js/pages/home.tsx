@@ -5,6 +5,7 @@ import PublicLayout from '@/layouts/public-layout';
 type MovieSummary = {
     id: number;
     title: string;
+    type?: string | null;
     poster_url: string | null;
     trailer_url?: string | null;
     release_date?: string | null;
@@ -14,8 +15,17 @@ type MovieSummary = {
 type Props = {
     hasAnimeOfWeek?: boolean;
     filmOfWeek?: MovieSummary[];
-    archivePreview?: { id: number; title: string; poster_url: string | null }[];
+    archivePreview?: {
+        id: number;
+        title: string;
+        type?: string | null;
+        poster_url: string | null;
+    }[];
 };
+
+function isSeriesType(type?: string | null): boolean {
+    return ['tv', 'series', 'tv_series'].includes((type ?? '').toLowerCase());
+}
 
 function FilmOfWeekCard({ movie }: { movie: MovieSummary }) {
     return (
@@ -25,6 +35,11 @@ function FilmOfWeekCard({ movie }: { movie: MovieSummary }) {
         >
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-40" />
             <div className="aspect-[2/3] w-full overflow-hidden bg-muted">
+                {isSeriesType(movie.type) && (
+                    <span className="absolute top-3 left-3 z-10 rounded-sm bg-violet-600/90 px-2 py-1 text-[10px] font-semibold tracking-wide text-white uppercase">
+                        Series
+                    </span>
+                )}
                 {movie.poster_url ? (
                     <img
                         src={movie.poster_url}
@@ -82,7 +97,7 @@ function FilmOfWeekCard({ movie }: { movie: MovieSummary }) {
 function ArchiveCard({
     movie,
 }: {
-    movie: { id: number; title: string; poster_url: string | null };
+    movie: { id: number; title: string; type?: string | null; poster_url: string | null };
 }) {
     return (
         <Link
@@ -91,6 +106,11 @@ function ArchiveCard({
         >
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <div className="aspect-[2/3] overflow-hidden bg-muted">
+                {isSeriesType(movie.type) && (
+                    <span className="absolute top-3 left-3 z-10 rounded-sm bg-violet-600/90 px-2 py-1 text-[10px] font-semibold tracking-wide text-white uppercase">
+                        Series
+                    </span>
+                )}
                 {movie.poster_url ? (
                     <img
                         src={movie.poster_url}

@@ -35,6 +35,7 @@ class WatchController extends Controller
             'movie' => [
                 'id' => $movie->id,
                 'title' => $movie->title,
+                'type' => $movie->type,
                 'overview' => $movie->overview,
                 'poster_url' => $movie->poster_url,
                 'trailer_url' => $movie->trailer_url,

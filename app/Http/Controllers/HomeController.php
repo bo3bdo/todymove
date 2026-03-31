@@ -31,6 +31,7 @@ class HomeController extends Controller
             'filmOfWeek' => $filmOfWeek->map(fn (Movie $m) => [
                 'id' => $m->id,
                 'title' => $m->title,
+                'type' => $m->type,
                 'poster_url' => $m->poster_url,
                 'trailer_url' => $m->trailer_url,
                 'release_date' => $m->release_date?->format('Y'),
@@ -39,6 +40,7 @@ class HomeController extends Controller
             'archivePreview' => $archivePreview->map(fn (Movie $m) => [
                 'id' => $m->id,
                 'title' => $m->title,
+                'type' => $m->type,
                 'poster_url' => $m->poster_url,
             ])->values()->all(),
         ]);

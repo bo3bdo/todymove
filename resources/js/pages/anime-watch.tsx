@@ -373,6 +373,9 @@ export default function AnimeWatch({
                         <div className="flex items-start gap-4 lg:flex-col lg:gap-0 lg:space-y-4">
                             {anime.poster_url && (
                                 <div className="relative w-[110px] shrink-0 sm:w-[140px] lg:w-[180px]">
+                                    <span className="absolute top-2 left-2 z-10 rounded-sm bg-violet-600/90 px-2 py-1 text-[10px] font-semibold tracking-wide text-white uppercase">
+                                        Series
+                                    </span>
                                     <div className="absolute -inset-1 rounded-sm bg-violet-500/10 blur-xl lg:-inset-2" />
                                     <img
                                         src={anime.poster_url}

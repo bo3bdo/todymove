@@ -28,6 +28,9 @@ function AnimeOfWeekCard({ anime }: { anime: AnimeSummary }) {
         >
             <div className="absolute inset-0 bg-gradient-to-t from-violet-900/80 via-violet-500/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-40" />
             <div className="aspect-[2/3] w-full overflow-hidden bg-muted">
+                <span className="absolute top-3 left-3 z-10 rounded-sm bg-violet-600/90 px-2 py-1 text-[10px] font-semibold tracking-wide text-white uppercase">
+                    Series
+                </span>
                 {anime.poster_url ? (
                     <img
                         src={anime.poster_url}
@@ -94,6 +97,9 @@ function ArchiveCard({
         >
             <div className="absolute inset-0 bg-gradient-to-t from-violet-900/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <div className="aspect-[2/3] overflow-hidden bg-muted">
+                <span className="absolute top-3 left-3 z-10 rounded-sm bg-violet-600/90 px-2 py-1 text-[10px] font-semibold tracking-wide text-white uppercase">
+                    Series
+                </span>
                 {anime.poster_url ? (
                     <img
                         src={anime.poster_url}

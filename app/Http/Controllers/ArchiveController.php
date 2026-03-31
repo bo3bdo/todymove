@@ -21,6 +21,7 @@ class ArchiveController extends Controller
             'movies' => $movies->through(fn (Movie $movie) => [
                 'id' => $movie->id,
                 'title' => $movie->title,
+                'type' => $movie->type,
                 'poster_url' => $movie->poster_url,
                 'release_date' => $movie->release_date?->format('Y'),
                 'vote_average' => $movie->vote_average,

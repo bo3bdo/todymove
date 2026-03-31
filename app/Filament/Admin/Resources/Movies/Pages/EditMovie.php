@@ -17,7 +17,7 @@ class EditMovie extends EditRecord
     protected static string $resource = MovieResource::class;
 
     /**
-     * @var array<int, array{id: int, title: string, release_date: string|null, poster_path: string|null}>
+     * @var array<int, array{id: int, media_type: 'movie'|'tv', title: string, release_date: string|null, poster_path: string|null}>
      */
     public array $tmdbSearchResults = [];
 
@@ -103,7 +103,11 @@ class EditMovie extends EditRecord
         }
 
         if (count($results) === 1) {
-            $this->fillFromTmdb($results[0]['id']);
+            if (($results[0]['media_type'] ?? 'movie') === 'tv') {
+                $this->fillFromTmdbTv($results[0]['id']);
+            } else {
+                $this->fillFromTmdb($results[0]['id']);
+            }
             Notification::make()
                 ->success()
                 ->title('Fetched from TMDB')
@@ -137,9 +141,13 @@ class EditMovie extends EditRecord
         return null;
     }
 
-    public function selectTmdbMovie(int $tmdbId): void
+    public function selectTmdbMovie(int $tmdbId, string $mediaType = 'movie'): void
     {
-        $this->fillFromTmdb($tmdbId);
+        if ($mediaType === 'tv') {
+            $this->fillFromTmdbTv($tmdbId);
+        } else {
+            $this->fillFromTmdb($tmdbId);
+        }
         Notification::make()
             ->success()
             ->title('Fetched from TMDB')
@@ -176,6 +184,7 @@ class EditMovie extends EditRecord
         $this->form->fill([
             'title' => $titleToUse,
             'tmdb_id' => $tmdbId,
+            'type' => 'movie',
             'poster_path' => $details['poster_path'] ?? null,
             'backdrop_path' => $details['backdrop_path'] ?? null,
             'overview' => $details['overview'] ?? null,
@@ -219,6 +228,7 @@ class EditMovie extends EditRecord
         $this->form->fill([
             'title' => $titleToUse,
             'tmdb_id' => $tmdbId,
+            'type' => 'tv',
             'poster_path' => $details['poster_path'] ?? null,
             'backdrop_path' => $details['backdrop_path'] ?? null,
             'overview' => $details['overview'] ?? null,

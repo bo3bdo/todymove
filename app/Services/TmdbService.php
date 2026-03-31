@@ -17,9 +17,9 @@ class TmdbService
     ) {}
 
     /**
-     * Search movies by title. Returns array of results with id, title, release_date, poster_path.
+     * Search movies and TV series by title.
      *
-     * @return array<int, array{id: int, title: string, release_date: string|null, poster_path: string|null}>
+     * @return array<int, array{id: int, media_type: 'movie'|'tv', title: string, release_date: string|null, poster_path: string|null}>
      */
     public function search(string $query): array
     {
@@ -27,7 +27,7 @@ class TmdbService
 
         return Cache::remember($cacheKey, self::CACHE_TTL_SECONDS, function () use ($query) {
             $response = Http::withToken($this->accessToken)
-                ->get(self::BASE_URL.'/search/movie', [
+                ->get(self::BASE_URL.'/search/multi', [
                     'query' => $query,
                     'language' => $this->language,
                 ]);
@@ -38,12 +38,20 @@ class TmdbService
 
             $data = $response->json();
             $results = $data['results'] ?? [];
+            $results = array_values(array_filter($results, function ($item): bool {
+                return in_array(($item['media_type'] ?? null), ['movie', 'tv'], true);
+            }));
 
             return array_map(function ($item) {
+                $isTv = ($item['media_type'] ?? '') === 'tv';
+
                 return [
                     'id' => $item['id'],
-                    'title' => $item['title'] ?? '',
-                    'release_date' => $item['release_date'] ?? null,
+                    'media_type' => $isTv ? 'tv' : 'movie',
+                    'title' => $isTv ? ($item['name'] ?? '') : ($item['title'] ?? ''),
+                    'release_date' => $isTv
+                        ? ($item['first_air_date'] ?? null)
+                        : ($item['release_date'] ?? null),
                     'poster_path' => $item['poster_path'] ?? null,
                 ];
             }, $results);
