@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Illuminate\Validation\Rule;
 
 class MovieForm
 {
@@ -28,11 +29,20 @@ class MovieForm
                             ->maxLength(500),
                         TextInput::make('tmdb_id')
                             ->numeric()
+                            ->rule(Rule::unique('movies', 'tmdb_id'))
+                            ->dehydrateStateUsing(
+                                fn ($state): ?int => filled($state) ? (int) $state : null
+                            )
                             ->dehydrated()
                             ->dehydratedWhenHidden()
                             ->hidden(),
                         TextInput::make('type')
                             ->default('movie')
+                            ->dehydrateStateUsing(
+                                fn ($state): string => in_array(strtolower((string) $state), ['tv', 'movie'], true)
+                                    ? strtolower((string) $state)
+                                    : 'movie'
+                            )
                             ->dehydrated()
                             ->dehydratedWhenHidden()
                             ->hidden(),
